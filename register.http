@@ -1,0 +1,8 @@
+#GET http://localhost:3000/register?email=me@there.now&password=5
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "email": "me@there.now",
+    "password": "123"
+}   
