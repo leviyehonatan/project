@@ -1,4 +1,5 @@
 require("dotenv").config();
+const jwt = require('jsonwebtoken')
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -38,12 +39,31 @@ app.post('/register', async (req, res) => {
         }
 
         const newUser = await User.create({ email, password })
-        res.status(201).send("User Created!")
+        res.json({ token: jwt.sign({ email }, process.env.SECRET, { expiresIn: "2h" }) })
+
     } catch (error) {
         console.log("Error: ", error)
         res.status(500).send(error)
     }
 })
+app.post('/login', async (req, res) => {
+    console.log("login", req.body)
+    try {
+        const { email, password } = req.body
+        const existingUser = await User.findOne({ email, password }).exec()
+        if (!existingUser) {
+            res.status(400).send("User or Password Invalid")
+            return;
+        }
+
+        res.json({ token: jwt.sign({ email }, process.env.SECRET, { expiresIn: "2h" }) })
+
+    } catch (error) {
+        console.log("Error: ", error)
+        res.status(500).send(error)
+    }
+})
+
 
 const port = process.env.PORT
 const server = app.listen(port, () => {

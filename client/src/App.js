@@ -8,19 +8,31 @@ async function register(email, password) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password })
-  }).catch(err => {
-    console.log(err)
   })
-  return response.body
+  const { token } = await response.json();
+  localStorage.setItem("token", token)
+}
+
+async function login(email, password) {
+  const response = await fetch('http://localhost:4000/login', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password })
+  })
+  const { token } = await response.json();
+  localStorage.setItem("token", token)
+  console.log("logged in successfuly!!")
 }
 
 function App() {
   useEffect(async () => {
-    register("123", "456")
+    login("qQ", "456")
   })
   return (
     <div>
-
     </div>
   );
 }
